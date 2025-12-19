@@ -11,16 +11,35 @@ if ($_SERVER["REQUEST_METHOD"] === "POST") {
 
     switch ($type) {
         case "admin":
-            $_SESSION["username"] = $email;
-            $_SESSION["role"] = "admin";
-            header("Location: dashboard.php");
-            exit();
+             $sql = "SELECT * FROM admin
+                    WHERE admin_email='$email'
+                    AND password='$password'";
+            $result = mysqli_query($connection, $sql);
 
+            if (mysqli_num_rows($result) > 0) {
+                $_SESSION["username"] = $email;
+                $_SESSION["role"] = "admin";
+                header("Location: index.php");
+                exit();
+            } else {
+                $errors[] = "Invalid customer email or password";
+            }
+            break;
         case "staff":
-            $_SESSION["username"] = $email;
-            $_SESSION["role"] = "staff";
-            header("Location: dashboard.php");
-            exit();
+            $sql = "SELECT * FROM staff
+                    WHERE staff_email='$email'
+                    AND password='$password'";
+            $result = mysqli_query($connection, $sql);
+
+            if (mysqli_num_rows($result) > 0) {
+                $_SESSION["username"] = $email;
+                $_SESSION["role"] = "staff";
+                header("Location: index.php");
+                exit();
+            } else {
+                $errors[] = "Invalid customer email or password";
+            }
+            break;
 
         case "customer":
             $sql = "SELECT * FROM customer

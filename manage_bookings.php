@@ -33,9 +33,13 @@ if (isset($_POST["update"])) {
             <nav class="sidebar-nav">
                 <ul>
                     <li><a href="dashboard.php">📊 Dashboard</a></li>
-                    <li><a href="manage_rooms.php">🛏️ Manage Rooms</a></li>
+                    <?php if (isset($_SESSION["role"]) && in_array($_SESSION["role"], ["admin", "staff"])) { ?>
+                        <li><a href="manage_rooms.php">🛏️ Manage Rooms</a></li>
+                    <?php } ?>
                     <li><a href="manage_bookings.php" class="active">📅 Manage Bookings</a></li>
-                    <li><a href="manage_staff.php">👥 Manage Staff</a></li>
+                    <?php if (isset($_SESSION["role"]) && $_SESSION["role"] === "admin") { ?>
+                        <li><a href="manage_staff.php">👥 Manage Staff</a></li>
+                    <?php } ?>
                 </ul>
             </nav>
             <div class="sidebar-footer">

@@ -122,6 +122,10 @@ if ($_SERVER["REQUEST_METHOD"] === "POST") {
                         </div>
                     </div>
                     <?php endif; ?>
+                    <div id="clientErrors" class="error-alert" style="display:none;">
+                        <div class="error-icon">⚠️</div>
+                        <div class="error-list" id="clientErrorList"></div>
+                    </div>
 
                     <!-- First Name & Last Name -->
                     <div class="form-row">
@@ -252,22 +256,17 @@ if ($_SERVER["REQUEST_METHOD"] === "POST") {
     </div>
 
     <script>
-        // Password strength checker
         function checkPasswordStrength() {
             const password = document.getElementById('password').value;
             const strengthFill = document.getElementById('strengthFill');
             const strengthText = document.getElementById('strengthText');
-
             let strength = 0;
             let text = '';
-
             if (password.length >= 8) strength++;
             if (/[A-Z]/.test(password)) strength++;
             if (/[0-9]/.test(password)) strength++;
             if (/[!@#$%^&*]/.test(password)) strength++;
-
             strengthFill.classList.remove('weak', 'fair', 'good', 'strong');
-
             if (strength === 0) {
                 strengthFill.classList.add('weak');
                 text = 'Very weak';
@@ -284,36 +283,83 @@ if ($_SERVER["REQUEST_METHOD"] === "POST") {
                 strengthFill.classList.add('strong');
                 text = 'Strong';
             }
-
             strengthText.textContent = text;
         }
-
-        // Form validation
-        document.getElementById('registerForm').addEventListener('submit', function(e) {
+        function showClientErrors(errors) {
+            const container = document.getElementById('clientErrors');
+            const list = document.getElementById('clientErrorList');
+            list.innerHTML = '';
+            errors.forEach(function(err) {
+                const div = document.createElement('div');
+                div.className = 'error-item';
+                div.textContent = err;
+                list.appendChild(div);
+            });
+            container.style.display = errors.length ? 'flex' : 'none';
+        }
+        function collectErrors() {
+            const errors = [];
             const firstName = document.getElementById('firstName').value.trim();
             const lastName = document.getElementById('lastName').value.trim();
             const email = document.getElementById('email').value.trim();
             const phone = document.getElementById('phone').value.trim();
-            const password = document.getElementById('password').value.trim();
-            const confirmPassword = document.getElementById('confirmPassword').value.trim();
+            const password = document.getElementById('password').value;
+            const confirmPassword = document.getElementById('confirmPassword').value;
             const agreeTerms = document.getElementById('agreeTerms').checked;
-
-            if (!firstName || !lastName || !email || !phone || !password || !confirmPassword) {
-                e.preventDefault();
-                alert('Please fill in all fields');
-                return;
+            if (!firstName) errors.push('First name is required');
+            if (!lastName) errors.push('Last name is required');
+            const emailRegex = /^[A-Za-z]+[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[A-Za-z]{2,}$/;
+            if (!email) {
+                errors.push('Email is required');
+            } else if (!emailRegex.test(email)) {
+                errors.push('Invalid email format');
             }
-
+            const phoneRegex = /^[0-9\-\+\s\(\)]{10,}$/;
+            if (!phone) {
+                errors.push('Phone number is required');
+            } else if (!phoneRegex.test(phone)) {
+                errors.push('Invalid phone number format');
+            }
+            if (!password) {
+                errors.push('Password is required');
+            } else {
+                if (password.length < 8) errors.push('Password must be at least 8 characters');
+                if (!/[A-Z]/.test(password) || !/[0-9]/.test(password)) {
+                    errors.push('Password must contain at least one uppercase letter and one number');
+                }
+            }
             if (password !== confirmPassword) {
-                e.preventDefault();
-                alert('Passwords do not match');
-                return;
+                errors.push('Passwords do not match');
             }
-
             if (!agreeTerms) {
+                errors.push('You must agree to the Terms of Service');
+            }
+            return errors;
+        }
+        function bindLiveValidation() {
+            ['firstName','lastName','email','phone','password','confirmPassword'].forEach(function(id) {
+                const el = document.getElementById(id);
+                if (!el) return;
+                el.addEventListener('input', function() {
+                    if (id === 'password') checkPasswordStrength();
+                    showClientErrors(collectErrors());
+                });
+            });
+            const agree = document.getElementById('agreeTerms');
+            if (agree) {
+                agree.addEventListener('change', function() {
+                    showClientErrors(collectErrors());
+                });
+            }
+        }
+        bindLiveValidation();
+        document.getElementById('registerForm').addEventListener('submit', function(e) {
+            const errors = collectErrors();
+            if (errors.length) {
                 e.preventDefault();
-                alert('You must agree to the Terms of Service');
-                return;
+                showClientErrors(errors);
+            } else {
+                showClientErrors([]);
             }
         });
     </script>

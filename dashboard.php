@@ -1,6 +1,11 @@
 <?php
 session_start();
+
 include "config.php";
+
+error_reporting(0);
+ini_set('display_errors', 0);
+
 
 if (!isset($_SESSION["username"])) {
     header("Location: login.php");
@@ -88,9 +93,13 @@ $available_rooms = $conn->query("SELECT COUNT(*) as count FROM rooms WHERE statu
             <nav class="sidebar-nav">
                 <ul>
                     <li><a href="dashboard.php" class="active">📊 Dashboard</a></li>
-                    <li><a href="manage_rooms.php">🛏️ Manage Rooms</a></li>
+                    <?php if (isset($_SESSION["role"]) && $_SESSION["role"] === "staff") { ?>
+                        <li><a href="manage_rooms.php">🛏️ Manage Rooms</a></li>
+                    <?php } ?>
                     <li><a href="manage_bookings.php">📅 Manage Bookings</a></li>
-                    <li><a href="manage_staff.php">👥 Manage Staff</a></li>
+                    <?php if (isset($_SESSION["role"]) && $_SESSION["role"] === "admin") { ?>
+                        <li><a href="manage_staff.php">👥 Manage Staff</a></li>
+                    <?php } ?>
                 </ul>
             </nav>
             <div class="sidebar-footer">
@@ -135,13 +144,15 @@ $available_rooms = $conn->query("SELECT COUNT(*) as count FROM rooms WHERE statu
 
                 <h2>Quick Actions</h2>
                 <div class="dashboard-actions">
-                    <a href="manage_rooms.php" class="action-card">
-                        <div class="action-icon">🛏️</div>
-                        <div class="action-info">
-                            <h3>Manage Rooms</h3>
-                            <p>Add, edit, or delete rooms</p>
-                        </div>
-                    </a>
+                    <?php if (isset($_SESSION["role"]) && $_SESSION["role"] === "staff") { ?>
+                        <a href="manage_rooms.php" class="action-card">
+                            <div class="action-icon">🛏️</div>
+                            <div class="action-info">
+                                <h3>Manage Rooms</h3>
+                                <p>Add, edit, or delete rooms</p>
+                            </div>
+                        </a>
+                    <?php } ?>
                     <a href="manage_bookings.php" class="action-card">
                         <div class="action-icon">📅</div>
                         <div class="action-info">
@@ -149,13 +160,15 @@ $available_rooms = $conn->query("SELECT COUNT(*) as count FROM rooms WHERE statu
                             <p>View and update booking status</p>
                         </div>
                     </a>
-                    <a href="manage_staff.php" class="action-card">
-                        <div class="action-icon">👥</div>
-                        <div class="action-info">
-                            <h3>Manage Staff</h3>
-                            <p>Add or remove staff members</p>
-                        </div>
-                    </a>
+                    <?php if (isset($_SESSION["role"]) && $_SESSION["role"] === "admin") { ?>
+                        <a href="manage_staff.php" class="action-card">
+                            <div class="action-icon">👥</div>
+                            <div class="action-info">
+                                <h3>Manage Staff</h3>
+                                <p>Add or remove staff members</p>
+                            </div>
+                        </a>
+                    <?php } ?>
                 </div>
 
                 <h2>Recent Bookings</h2>
