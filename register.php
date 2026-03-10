@@ -30,8 +30,8 @@ if ($_SERVER["REQUEST_METHOD"] === "POST") {
     }
     if (empty($phone)) {
         $errors[] = "Phone number is required";
-    } elseif (!preg_match('/^[0-9\-\+\s\(\)]{10,}$/', $phone)) {
-        $errors[] = "Invalid phone number format";
+    } elseif (!preg_match('/^(97|98)\d{8}$/', $phone)) {
+        $errors[] = "Invalid phone number";
     }
     if (empty($password)) {
         $errors[] = "Password is required";
@@ -58,9 +58,10 @@ if ($_SERVER["REQUEST_METHOD"] === "POST") {
         $fullname = $firstName . " " . $lastName;
 
         // Create session for auto-login
-        $_SESSION["user_email"] = $email;
-        $_SESSION["user_role"] = "customer";
-        $_SESSION["username"] = $firstName . " " . $lastName;
+        $_SESSION["username"] = $email;
+        $_SESSION["name"] = $fullname;
+
+        $_SESSION["role"] = "customer";
         $_SESSION["logged_in"] = true;
         $_SESSION["login_time"] = date("Y-m-d H:i:s");
         $query = "INSERT INTO customer (customer_fullname, customer_email, customer_phone, password)
@@ -308,17 +309,17 @@ if ($_SERVER["REQUEST_METHOD"] === "POST") {
             const agreeTerms = document.getElementById('agreeTerms').checked;
             if (!firstName) errors.push('First name is required');
             if (!lastName) errors.push('Last name is required');
-            const emailRegex = /^[A-Za-z]+[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[A-Za-z]{2,}$/;
+            const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
             if (!email) {
                 errors.push('Email is required');
             } else if (!emailRegex.test(email)) {
                 errors.push('Invalid email format');
             }
-            const phoneRegex = /^[0-9\-\+\s\(\)]{10,}$/;
+            const phoneRegex = /^(?=(?:[^0-9]*[0-9]){10})[0-9\-\+\s\(\)]{10,20}$/;
             if (!phone) {
                 errors.push('Phone number is required');
             } else if (!phoneRegex.test(phone)) {
-                errors.push('Invalid phone number format');
+                errors.push('Invalid phone number (must contain at least 10 digits)');
             }
             if (!password) {
                 errors.push('Password is required');

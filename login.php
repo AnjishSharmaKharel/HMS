@@ -19,10 +19,10 @@ if ($_SERVER["REQUEST_METHOD"] === "POST") {
             if (mysqli_num_rows($result) > 0) {
                 $_SESSION["username"] = $email;
                 $_SESSION["role"] = "admin";
-                header("Location: index.php");
+                header("Location: dashboard.php");
                 exit();
             } else {
-                $errors[] = "Invalid customer email or password";
+                $errors[] = "Invalid admin email or password";
             }
             break;
         case "staff":
@@ -32,12 +32,12 @@ if ($_SERVER["REQUEST_METHOD"] === "POST") {
             $result = mysqli_query($connection, $sql);
 
             if (mysqli_num_rows($result) > 0) {
-                $_SESSION["username"] = $email;
+                $_SESSION["username"] = $fullname;
                 $_SESSION["role"] = "staff";
-                header("Location: index.php");
+                header("Location: dashboard.php");
                 exit();
             } else {
-                $errors[] = "Invalid customer email or password";
+                $errors[] = "Invalid staff email or password";
             }
             break;
 
@@ -46,9 +46,11 @@ if ($_SERVER["REQUEST_METHOD"] === "POST") {
                     WHERE customer_email='$email'
                     AND password='$password'";
             $result = mysqli_query($connection, $sql);
-
+            $row=mysqli_fetch_assoc($result);
+            $fullname = $row["customer_fullname"];
             if (mysqli_num_rows($result) > 0) {
-                $_SESSION["username"] = $email;
+                $_SESSION["username"] = $fullname;
+              
                 $_SESSION["role"] = "customer";
                 header("Location: index.php");
                 exit();

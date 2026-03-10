@@ -1,5 +1,6 @@
 <?php
 session_start();
+include "config.php";
 $baseUrl = $_SERVER["REQUEST_URI"];
 $currentPage = basename($baseUrl, ".php") ?: "home";
 ?>
@@ -30,6 +31,9 @@ $currentPage = basename($baseUrl, ".php") ?: "home";
             <div class="navbar-cta">
                 <?php if (isset($_SESSION["username"])) { ?>
                     <strong>Hello <?php echo $_SESSION["username"]; ?></strong>
+                    <?php if (isset($_SESSION["role"]) && $_SESSION["role"] === "admin") { ?>
+                        <a href="manage_staff.php" class="login-btn">Manage Staff</a>
+                    <?php } ?>
  <a href="logout.php" class="login-btn">Logout</a>
 
                 <?php } else { ?>
@@ -46,7 +50,12 @@ $currentPage = basename($baseUrl, ".php") ?: "home";
                 <a href="#rooms">Rooms</a>
                 <a href="#services">Services</a>
                 <a href="#contact">Contact</a>
-                <a href="login.php">Login</a>
+                <?php if (isset($_SESSION["role"]) && $_SESSION["role"] === "admin") { ?>
+                    <a href="manage_staff.php">Manage Staff</a>
+                    <a href="logout.php">Logout</a>
+                <?php } else { ?>
+                    <a href="login.php">Login</a>
+                <?php } ?>
             </div>
         </div>
     </nav>
@@ -96,113 +105,59 @@ $currentPage = basename($baseUrl, ".php") ?: "home";
 
         <div class="rooms-container">
             <div class="rooms-grid">
-                <!-- Standard Room -->
-                <div class="room-card">
-                    <div class="room-image">🛏️</div>
-                    <div class="room-content">
-                        <h3 class="room-name">Standard Room</h3>
-                        <p class="room-description">Cozy room with essential amenities</p>
+                <?php
+                // Group rooms by type to show availability
+                $rooms = $conn->query("SELECT 
+                    room_type, 
+                    MAX(price) as price, 
+                    MAX(description) as description, 
+                    COUNT(*) as total_rooms,
+                    SUM(CASE WHEN status = 'available' THEN 1 ELSE 0 END) as available_rooms 
+                    FROM rooms 
+                    GROUP BY room_type 
+                    ORDER BY available_rooms DESC");
 
-                        <div class="room-features">
-                            <div class="room-feature">
-                                <span class="room-feature-icon">⭐</span>
-                                <span>Queen Bed</span>
-                            </div>
-                            <div class="room-feature">
-                                <span class="room-feature-icon">⭐</span>
-                                <span>Private Bath</span>
-                            </div>
-                            <div class="room-feature">
-                                <span class="room-feature-icon">⭐</span>
-                                <span>WiFi</span>
-                            </div>
-                            <div class="room-feature">
-                                <span class="room-feature-icon">⭐</span>
-                                <span>AC</span>
-                            </div>
-                        </div>
+                if ($rooms && $rooms->num_rows > 0) {
+                    while ($room = $rooms->fetch_assoc()) {
+                        $icon = "🛏️";
+                        if (stripos($room["room_type"], "Deluxe") !== false) { $icon = "👑"; }
+                        else if (stripos($room["room_type"], "Suite") !== false) { $icon = "🏰"; }
+                        
+                        echo "<div class='room-card'>";
+                        echo "<div class='room-image'>" . htmlspecialchars($icon) . "</div>";
+                        echo "<div class='room-content'>";
+                        echo "<h3 class='room-name'>" . htmlspecialchars($room["room_type"]) . "</h3>";
+                        echo "<p class='room-description'>" . htmlspecialchars($room["description"]) . "</p>";
+                        
+                        // Availability Status
+                        $available = intval($room["available_rooms"]);
+                        $total = intval($room["total_rooms"]);
+                        $statusColor = $available > 0 ? "#10b981" : "#ef4444";
+                        
+                        echo "<div style='margin: 1rem 0; font-size: 0.9rem;'>";
+                        echo "<span style='color: " . $statusColor . "; font-weight: bold;'>● " . ($available > 0 ? "Available" : "Fully Booked") . "</span>";
+                        echo "<span style='color: #6b7280; margin-left: 0.5rem;'>(" . $available . " of " . $total . " rooms free)</span>";
+                        echo "</div>";
 
-                        <div class="room-footer">
-                            <div class="room-price">
-                                <div class="room-price-amount">Rs.1500</div>
-                                <div class="room-price-label">per night</div>
-                            </div>
-                            <button class="btn-book">Book Now</button>
-                        </div>
-                    </div>
-                </div>
-
-                <!-- Deluxe Room -->
-                <div class="room-card">
-                    <div class="room-image">👑</div>
-                    <div class="room-content">
-                        <h3 class="room-name">Deluxe Room</h3>
-                        <p class="room-description">Spacious room with premium furnishings</p>
-
-                        <div class="room-features">
-                            <div class="room-feature">
-                                <span class="room-feature-icon">⭐</span>
-                                <span>King Bed</span>
-                            </div>
-                            <div class="room-feature">
-                                <span class="room-feature-icon">⭐</span>
-                                <span>Luxury Bath</span>
-                            </div>
-                            <div class="room-feature">
-                                <span class="room-feature-icon">⭐</span>
-                                <span>WiFi</span>
-                            </div>
-                            <div class="room-feature">
-                                <span class="room-feature-icon">⭐</span>
-                                <span>Mini Bar</span>
-                            </div>
-                        </div>
-
-                        <div class="room-footer">
-                            <div class="room-price">
-                                <div class="room-price-amount">Rs.2500</div>
-                                <div class="room-price-label">per night</div>
-                            </div>
-                            <button class="btn-book">Book Now</button>
-                        </div>
-                    </div>
-                </div>
-
-                <!-- Suite -->
-                <div class="room-card">
-                    <div class="room-image">🏰</div>
-                    <div class="room-content">
-                        <h3 class="room-name">Suite</h3>
-                        <p class="room-description">Ultimate luxury with separate living area</p>
-
-                        <div class="room-features">
-                            <div class="room-feature">
-                                <span class="room-feature-icon">⭐</span>
-                                <span>King Bed</span>
-                            </div>
-                            <div class="room-feature">
-                                <span class="room-feature-icon">⭐</span>
-                                <span>Jacuzzi</span>
-                            </div>
-                            <div class="room-feature">
-                                <span class="room-feature-icon">⭐</span>
-                                <span>Lounge</span>
-                            </div>
-                            <div class="room-feature">
-                                <span class="room-feature-icon">⭐</span>
-                                <span>Premium Service</span>
-                            </div>
-                        </div>
-
-                        <div class="room-footer">
-                            <div class="room-price">
-                                <div class="room-price-amount">Rs.3500</div>
-                                <div class="room-price-label">per night</div>
-                            </div>
-                            <button class="btn-book">Book Now</button>
-                        </div>
-                    </div>
-                </div>
+                        echo "<div class='room-footer'>";
+                        echo "<div class='room-price'>";
+                        echo "<div class='room-price-amount'>Rs." . htmlspecialchars($room["price"]) . "</div>";
+                        echo "<div class='room-price-label'>per night</div>";
+                        echo "</div>";
+                        
+                        if ($available > 0) {
+                            echo "<a href='book_room.php?type=" . urlencode($room["room_type"]) . "' class='btn-book'>Book Now</a>";
+                        } else {
+                            echo "<span class='btn-book' style='pointer-events:none;opacity:.6;background:#9ca3af;'>Sold Out</span>";
+                        }
+                        echo "</div>";
+                        echo "</div>";
+                        echo "</div>";
+                    }
+                } else {
+                    echo "<p>No rooms available right now.</p>";
+                }
+                ?>
             </div>
         </div>
     </section>

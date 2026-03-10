@@ -7,11 +7,24 @@ if (!isset($_SESSION["username"])) {
     exit();
 }
 
+if (!in_array($_SESSION["role"], ["admin", "staff"])) {
+    header("Location: dashboard.php");
+    exit();
+}
+
 // Update booking status
 if (isset($_POST["update"])) {
     $id = $_POST["booking_id"];
     $status = $_POST["status"];
     $conn->query("UPDATE bookings SET status='$status' WHERE id=$id");
+    
+    // Update room status based on booking status
+    $booking = $conn->query("SELECT room_id FROM bookings WHERE id=$id")->fetch_assoc();
+    if ($booking) {
+        $room_id = $booking['room_id'];
+        $room_status = ($status == 'cancelled') ? 'available' : 'booked';
+        $conn->query("UPDATE rooms SET status='$room_status' WHERE id=$room_id");
+    }
 }
 ?>
 <!DOCTYPE html>
@@ -20,6 +33,42 @@ if (isset($_POST["update"])) {
     <meta charset="UTF-8">
     <title>Manage Bookings</title>
     <link rel="stylesheet" href="style.css">
+    <?php if (isset($_SESSION["role"]) && $_SESSION["role"] === "admin") { ?>
+    <style>
+        body.admin-body { background-color: #f3f4f6; }
+        .admin-container { display: flex; min-height: 100vh; }
+        .admin-sidebar { width: 280px; background-color: #111827; color: #fff; flex-shrink: 0; display: flex; flex-direction: column; }
+        .sidebar-header { height: 4rem; display: flex; align-items: center; padding: 0 1.5rem; border-bottom: 1px solid #1f2937; }
+        .sidebar-brand { font-size: 1.25rem; font-weight: 700; color: #fff; text-decoration: none; display: flex; align-items: center; gap: .75rem; }
+        .sidebar-nav { flex: 1; padding: 1.5rem 1rem; }
+        .sidebar-nav ul { list-style: none; display: flex; flex-direction: column; gap: .5rem; margin: 0; padding: 0; }
+        .sidebar-nav a { display: flex; align-items: center; gap: .75rem; padding: .75rem 1rem; color: #9ca3af; text-decoration: none; border-radius: .5rem; font-weight: 500; transition: all .2s; }
+        .sidebar-nav a:hover, .sidebar-nav a.active { background-color: #1f2937; color: #fff; }
+        .sidebar-footer { padding: 1.5rem; border-top: 1px solid #1f2937; }
+        .admin-main { flex: 1; display: flex; flex-direction: column; overflow-x: hidden; }
+        .admin-topbar { height: 4rem; background-color: #fff; border-bottom: 1px solid var(--border, #d0d0d0); display: flex; justify-content: space-between; align-items: center; padding: 0 2rem; }
+        .admin-content { flex: 1; padding: 2rem; max-width: 1400px; width: 100%; margin: 0 auto; }
+        .user-profile { display: flex; align-items: center; gap: .75rem; }
+        .user-avatar { width: 2.5rem; height: 2.5rem; background-color: var(--primary-light, #416eb4); color: #fff; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-weight: 600; }
+        .user-name { font-weight: 600; font-size: .875rem; color: var(--foreground, #1a1a1a); }
+        .user-role { font-size: .75rem; color: #6b7280; text-transform: capitalize; }
+        table { width: 100%; border-collapse: collapse; margin-bottom: 2rem; background-color: #fff; box-shadow: 0 4px 6px rgba(0,0,0,.1); border-radius: .5rem; overflow: hidden; }
+        table th, table td { padding: 1rem; text-align: left; border-bottom: 1px solid var(--border, #d0d0d0); }
+        table th { background-color: var(--primary, #2d4a8c); color: #fff; font-weight: 600; text-transform: uppercase; font-size: .875rem; letter-spacing: .05em; }
+        table tr:last-child td { border-bottom: none; }
+        table tr:nth-child(even) { background-color: var(--muted-light, #f5f5f5); }
+        table tr:hover { background-color: rgba(201, 184, 136, .1); }
+        table form { display: flex; gap: .5rem; align-items: center; }
+        table select { padding: .375rem .75rem; border: 1px solid var(--border, #d0d0d0); border-radius: .25rem; background-color: #fff; font-size: .875rem; cursor: pointer; outline: none; transition: border-color .2s; }
+        table select:focus { border-color: var(--primary, #2d4a8c); }
+        table input[type="submit"] { padding: .375rem .75rem; background-color: var(--success, #10b981); color: #fff; border: none; border-radius: .25rem; font-size: .875rem; font-weight: 500; cursor: pointer; transition: background-color .2s; }
+        table input[type="submit"]:hover { background-color: #059669; }
+        .status-badge { padding: .25rem .75rem; border-radius: 9999px; font-size: .75rem; font-weight: 600; text-transform: uppercase; display: inline-block; }
+        .status-badge.pending { background-color: rgba(245,158,11,.1); color: var(--warning, #f59e0b); }
+        .status-badge.confirmed { background-color: rgba(16,185,129,.1); color: var(--success, #10b981); }
+        .status-badge.cancelled { background-color: rgba(239,68,68,.1); color: var(--error, #ef4444); }
+    </style>
+    <?php } ?>
 </head>
 <body class="admin-body">
     <div class="admin-container">
