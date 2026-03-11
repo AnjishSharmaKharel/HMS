@@ -30,9 +30,9 @@ if ($_SERVER["REQUEST_METHOD"] === "POST") {
                     WHERE staff_email='$email'
                     AND password='$password'";
             $result = mysqli_query($connection, $sql);
-
+                //echo $result;  
             if (mysqli_num_rows($result) > 0) {
-                $_SESSION["username"] = $fullname;
+                $_SESSION["username"] = $email;
                 $_SESSION["role"] = "staff";
                 header("Location: dashboard.php");
                 exit();
@@ -49,7 +49,7 @@ if ($_SERVER["REQUEST_METHOD"] === "POST") {
             $row=mysqli_fetch_assoc($result);
             $fullname = $row["customer_fullname"];
             if (mysqli_num_rows($result) > 0) {
-                $_SESSION["username"] = $fullname;
+                $_SESSION["username"] = $email;
               
                 $_SESSION["role"] = "customer";
                 header("Location: index.php");

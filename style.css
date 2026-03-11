@@ -174,32 +174,32 @@ nav {
     color: var(--primary);
 }
 
-/* Hero Section */
-.hero {
+/* body Section */
+.body {
     padding: 4rem 1rem;
     background-color: var(--muted-light);
     text-align: center;
 }
 
-.hero-container {
+.body-container {
     max-width: 800px;
     margin: 0 auto;
 }
 
-.hero h1 {
+.body h1 {
     font-size: 2.5rem;
     font-weight: 800;
     color: var(--primary);
     margin-bottom: 1rem;
 }
 
-.hero p {
+.body p {
     font-size: 1.125rem;
     color: var(--foreground);
     margin-bottom: 2rem;
 }
 
-.hero-buttons {
+.body-buttons {
     display: flex;
     justify-content: center;
     gap: 1rem;
@@ -232,17 +232,17 @@ nav {
     color: white;
 }
 
-.hero-icon {
+.body-icon {
     margin-top: 3rem;
 }
 
-.hero-icon-emoji {
+.body-icon-emoji {
     font-size: 4rem;
     display: block;
     margin-bottom: 0.5rem;
 }
 
-.hero-icon-text {
+.body-icon-text {
     font-weight: 600;
     color: var(--primary);
 }

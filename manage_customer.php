@@ -76,16 +76,16 @@ if (isset($_POST["add_customer"])) {
         <aside class="admin-sidebar">
             <div class="sidebar-header">
                 <a href="dashboard.php" class="sidebar-brand">
-                    <span style="font-size: 1.5rem;">🏨</span> LuxeHotel
+                    LuxeHotel
                 </a>
             </div>
             <nav class="sidebar-nav">
                 <ul>
-                    <li><a href="dashboard.php">📊 Dashboard</a></li>
-                    <li><a href="manage_rooms.php">🛏️ Manage Rooms</a></li>
-                    <li><a href="manage_bookings.php">📅 Manage Bookings</a></li>
-                    <li><a href="manage_staff.php">👥 Manage Staff</a></li>
-                    <li><a href="manage_customer.php" class="active">🧑‍💼 Manage Customers</a></li>
+                    <li><a href="dashboard.php"> Dashboard</a></li>
+                    <li><a href="manage_rooms.php"> Manage Rooms</a></li>
+                    <li><a href="manage_bookings.php"> Manage Bookings</a></li>
+                    <li><a href="manage_staff.php"> Manage Staff</a></li>
+                    <li><a href="manage_customer.php" class="acti've"> Manage Customers</a></li>
                 </ul>
             </nav>
             <div class="sidebar-footer">

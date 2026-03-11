@@ -60,20 +60,20 @@ $currentPage = basename($baseUrl, ".php") ?: "home";
         </div>
     </nav>
 
-    <!-- Hero Section -->
-    <section class="hero" id="home">
-        <div class="hero-container">
-            <div class="hero-content">
+    <!-- Body Section -->
+    <section class="body" id="home">
+        <div class="body-container">
+            <div class="body-content">
                 <h1>Welcome to LuxeHotel</h1>
                 <p>Experience unparalleled luxury and comfort in the heart of the city. Your perfect getaway awaits with world-class service and exceptional amenities.</p>
-                <div class="hero-buttons">
+                <div class="body-buttons">
                     <a href="#rooms" class="btn btn-primary">Explore Rooms</a>
                     <a href="login.php" class="btn btn-outline">Staff Login</a>
                 </div>
             </div>
-            <div class="hero-icon">
-                <span class="hero-icon-emoji">🏨</span>
-                <p class="hero-icon-text">5-Star Premium Hotel Experience</p>
+            <div class="body-icon">
+                <span class="body-icon-emoji">🏨</span>
+                <p class="body-icon-text">5-Star Premium Hotel Experience</p>
             </div>
         </div>
     </section>
