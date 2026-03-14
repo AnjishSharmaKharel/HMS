@@ -49,6 +49,7 @@ if (in_array($_SESSION["role"], ["admin", "staff"])) {
     <meta charset="UTF-8">
     <title>Admin Dashboard</title>
     <link rel="stylesheet" href="style.css">
+    <link rel="stylesheet" href="admin.css">
     
 </head>
 <body class="admin-body">

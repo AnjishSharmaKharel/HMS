@@ -110,6 +110,7 @@ if (isset($_GET["delete"])) {
     <meta charset="UTF-8">
     <title>Manage Staff</title>
     <link rel="stylesheet" href="style.css">
+    <link rel="stylesheet" href="admin.css">
 </head>
 <body class="admin-body">
     <div class="admin-container">
@@ -183,49 +184,6 @@ if (isset($_GET["delete"])) {
                     </form>
                 </div>
 
-                <script>
-                    document.querySelector('form').addEventListener('submit', function(e) {
-                        let valid = true;
-                        
-                        // Username Validation
-                        const username = document.getElementById('username');
-                        const usernameRegex = /^[a-zA-Z0-9_]{3,}$/;
-                        if (!usernameRegex.test(username.value)) {
-                            alert("Username must be at least 3 characters and alphanumeric.");
-                            valid = false;
-                        }
-
-                        // Name Validation
-                        const name = document.getElementById('name');
-                        const nameRegex = /^[a-zA-Z\s\-.']{2,}$/;
-                        if (!nameRegex.test(name.value)) {
-                            alert("Name must contain valid letters and be at least 2 characters.");
-                            valid = false;
-                        }
-
-                        // Email Validation
-                        const email = document.getElementById('email');
-                        const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
-                        if (!emailRegex.test(email.value)) {
-                            alert("Please enter a valid email address.");
-                            valid = false;
-                        }
-
-                        // Password Validation
-                        const password = document.getElementById('password');
-                        if (password.value.length < 8) {
-                            document.getElementById('passwordError').style.display = 'block';
-                            valid = false;
-                        } else {
-                            document.getElementById('passwordError').style.display = 'none';
-                        }
-
-                        if (!valid) {
-                            e.preventDefault();
-                        }
-                    });
-                </script>
-
                 <div class="card" style="background: white; padding: 2rem; border-radius: 0.5rem; box-shadow: 0 4px 6px rgba(0,0,0,0.1);">
                     <h3 style="margin-bottom: 1.5rem; color: var(--primary);">All Staff</h3>
                     <table>
@@ -284,43 +242,6 @@ if (isset($_GET["delete"])) {
                         echo "<div class='form-group'><label for='edit_password'>Password (leave blank to keep unchanged)</label><input type='password' id='edit_password' name='edit_password' placeholder='New password'></div>";
                         echo "<input type='submit' name='update_staff' value='Update Staff'>";
                         echo "</form>";
-                        echo "<script>
-                            (function(){
-                                const form = document.querySelector('form[method=\"POST\"] input[name=\"update_staff\"]') ? document.querySelector('form[method=\"POST\"]').closest('form') : null;
-                            })();
-                        </script>";
-                        echo "<script>
-                            document.querySelector('form').addEventListener('submit', function(e) {
-                                if (!document.querySelector('input[name=\"update_staff\"]')) return;
-                                let valid = true;
-                                const username = document.getElementById('edit_username');
-                                const usernameRegex = /^[a-zA-Z0-9_]{3,}$/;
-                                if (!usernameRegex.test(username.value)) {
-                                    alert('Username must be at least 3 characters and alphanumeric.');
-                                    valid = false;
-                                }
-                                const name = document.getElementById('edit_name');
-                                const nameRegex = /^[a-zA-Z\\s\\-\\.\\']{2,}$/;
-                                if (!nameRegex.test(name.value)) {
-                                    alert('Name must contain valid letters and be at least 2 characters.');
-                                    valid = false;
-                                }
-                                const email = document.getElementById('edit_email');
-                                const emailRegex = /^[^\\s@]+@[^\\s@]+\\.[^\\s@]+$/;
-                                if (!emailRegex.test(email.value)) {
-                                    alert('Please enter a valid email address.');
-                                    valid = false;
-                                }
-                                const password = document.getElementById('edit_password');
-                                if (password.value && password.value.length < 8) {
-                                    alert('Password must be at least 8 characters.');
-                                    valid = false;
-                                }
-                                if (!valid) {
-                                    e.preventDefault();
-                                }
-                            });
-                        </script>";
                         echo "</div>";
                     }
                 }
@@ -328,5 +249,6 @@ if (isset($_GET["delete"])) {
             </div>
         </main>
     </div>
+    <script src="staff.js"></script>
 </body>
 </html>

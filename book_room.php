@@ -88,16 +88,7 @@ if (isset($_POST["confirm_booking"])) {
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Book Room - LuxeHotel</title>
     <link rel="stylesheet" href="style.css">
-    <style>
-        .booking-container { max-width: 600px; margin: 4rem auto; padding: 0 1rem; }
-        .booking-card { background: white; padding: 2rem; border-radius: 0.5rem; box-shadow: 0 4px 6px rgba(0,0,0,0.1); }
-        .form-group { margin-bottom: 1.5rem; }
-        .form-group label { display: block; margin-bottom: 0.5rem; font-weight: 500; }
-        .form-input { width: 100%; padding: 0.75rem; border: 1px solid #d1d5db; border-radius: 0.375rem; }
-        .btn-submit { width: 100%; padding: 0.75rem; background: var(--primary); color: white; border: none; border-radius: 0.375rem; font-size: 1rem; font-weight: 600; cursor: pointer; }
-        .btn-submit:hover { background: var(--primary-dark); }
-        .room-summary { background: #f3f4f6; padding: 1rem; border-radius: 0.375rem; margin-bottom: 1.5rem; }
-    </style>
+    <link rel="stylesheet" href="book_room.css">
 </head>
 <body>
     <nav>
