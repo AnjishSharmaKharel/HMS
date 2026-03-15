@@ -34,8 +34,10 @@ $currentPage = basename($baseUrl, ".php") ?: "home";
                     <strong>Hello <?php echo $_SESSION["username"]; ?></strong>
                     <?php if (isset($_SESSION["role"]) && $_SESSION["role"] === "admin") { ?>
                         <a href="manage_staff.php" class="login-btn">Manage Staff</a>
+                    <?php } elseif (isset($_SESSION["role"]) && $_SESSION["role"] === "customer") { ?>
+                        <a href="bookings.php" class="login-btn">My Bookings</a>
                     <?php } ?>
- <a href="logout.php" class="login-btn">Logout</a>
+                    <a href="logout.php" class="login-btn">Logout</a>
 
                 <?php } else { ?>
                 <a href="login.php" class="login-btn">Login</a>
@@ -53,6 +55,9 @@ $currentPage = basename($baseUrl, ".php") ?: "home";
                 <a href="#contact">Contact</a>
                 <?php if (isset($_SESSION["role"]) && $_SESSION["role"] === "admin") { ?>
                     <a href="manage_staff.php">Manage Staff</a>
+                    <a href="logout.php">Logout</a>
+                <?php } elseif (isset($_SESSION["role"]) && $_SESSION["role"] === "customer") { ?>
+                    <a href="bookings.php">My Bookings</a>
                     <a href="logout.php">Logout</a>
                 <?php } else { ?>
                     <a href="login.php">Login</a>
